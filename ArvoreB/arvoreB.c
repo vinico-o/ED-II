@@ -23,3 +23,27 @@ No* BuscaRecursiva(No* raiz, int busca)
         return BuscaRecursiva(raiz->filho[i], busca);
     }
 }
+
+No* CriarNo(int chave)
+{
+    No* novo = malloc(sizeof(No));
+    novo->numero = 0;
+    novo->folha = false;
+}
+
+No* InsercaoCLRS(No* raiz, int chave)
+{
+    //se o vetor estiver cheio (2t - 1)
+    if(raiz->numero == MAX)
+    {
+        No* novo = CriarNo(chave);
+        novo->filho[0] = raiz;
+        //TODO: SPLITCHILD
+        //TODO: INSERENAOCHEIO
+    }
+    else
+    {
+        //TODO: INSERENAOCHEIO
+    }
+}
+
