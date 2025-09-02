@@ -131,3 +131,26 @@ void SplitChildren(Arvore raiz, int index)
     raiz->numero ++;
 
 }
+
+void RemocaoCLRS(Arvore raiz, int chave)
+{
+    int i;
+    //Encontrando o indice da chave no no
+    for(i = 0; i < raiz->numero && raiz->chave[i] < chave; i++);
+
+    //Caso 1: a chave aparece em um no folha.
+    if(raiz->folha == true)
+    {
+        //verificamos se a chave foi encontrada e se ela eh acessivel
+        if(i < raiz->numero && chave == raiz->chave[i])
+        {
+            //percorremos o vetor a partir do indice, trazendo todas as cheves posteriores uma casa pare tras,
+            //sobrescrevendo (eliminando) a chave desejada
+            for(int j = i; j < raiz->numero - 1; j++) //utilizamos numero - 1 para nao acessar fora do vetor (no ultimo elemento)
+            {
+                raiz->chave[j] = raiz->chave[j + 1]; //desloca a chave
+            }
+            raiz->numero --; //ajustamos o numero de chaves
+        }
+    }
+}
