@@ -153,4 +153,36 @@ void RemocaoCLRS(Arvore raiz, int chave)
             raiz->numero --; //ajustamos o numero de chaves
         }
     }
+    //Caso 2: a chave aparece em um no interno (nao folha)
+    if(raiz->folha == false)
+    {
+    
+        if(i < raiz->numero && raiz->chave[i] == chave)
+        {
+            No* noAnt = raiz->filho[i];
+            No* noSuc = raiz->filho[i + 1];
+
+            //Caso 2a: Se o filho y de x que precede k tem ao menos t chaves
+            if(noAnt->numero >= t) //(se retirarmos um, fica t - 1, ainda valido)
+            {
+                raiz->chave[i] = noAnt->chave[noAnt->numero - 1]; //utilizamos noAnt->numero - 1 pois eh o ultimo valor das chaves
+                RemocaoCLRS(noAnt, noAnt->chave[noAnt->numero - 1]); //TODO: verificar se nao ha erro nos parametros
+            }
+
+            //Caso 2b: Se o filho z de x que sucede k tem ao menos t chaves
+            else if(noSuc->numero >= t) //(se retirarmos um, fica t - 1, ainda valido)
+            {
+                raiz->chave[i] = noAnt->chave[0]; //utilizamos 0 pois eh o primeiro valor das chaves
+                RemocaoCLRS(noAnt, noAnt->chave[0]); //TODO: verificar se nao ha erro nos parametros
+            }
+            //Caso 2c: se ambos os filhos possuem t - 1 chaves (nao eh possivel remover de nenhuma delas)
+            else
+            {
+                //TODO: MergeChildren(raiz, i);
+                RemocaoCLRS(noAnt, chave); //TODO: verificar se nao ha erro nos parametros
+            }
+        }
+        
+    }
+
 }
