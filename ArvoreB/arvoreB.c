@@ -62,7 +62,7 @@ void InsercaoNaoCheio(Arvore raiz, int chave)
 
         //inserimos a chave e atualizamos o valor de chaves atual
         raiz->chave[i + 1] = chave;
-        raiz->numero += 1;
+        raiz->numero ++;
     }
     else
     {
@@ -153,10 +153,10 @@ void RemocaoCLRS(Arvore raiz, int chave)
             raiz->numero --; //ajustamos o numero de chaves
         }
     }
-    //Caso 2: a chave aparece em um no interno (nao folha)
+    //a chave esta em um n0 interno (poderia ter usado eslse mesmo), termos os casos 2 e 3
     if(raiz->folha == false)
     {
-    
+        //Caso 2: a chave aparece em um no interno (nao folha)
         if(i < raiz->numero && raiz->chave[i] == chave)
         {
             No* noAnt = raiz->filho[i];
@@ -178,11 +178,106 @@ void RemocaoCLRS(Arvore raiz, int chave)
             //Caso 2c: se ambos os filhos possuem t - 1 chaves (nao eh possivel remover de nenhuma delas)
             else
             {
-                //TODO: MergeChildren(raiz, i);
+                MergeChildren(raiz, i);
                 RemocaoCLRS(noAnt, chave); //TODO: verificar se nao ha erro nos parametros
             }
         }
-        
+        //Caso 3: a chave nao esta no no e ele eh interno, pode estar em um no filho
+        if(i >= raiz->numero || raiz->chave[i] != chave)
+        {
+            No* filho = raiz->filho[i];
+
+            //Caso 3a: se o filho tem exatamente (t - 1) chaves
+            if(filho->numero == MIN)
+            {
+                //TODO: rever o i > 0
+                //Se o irmao a esquerda ou direita tiver ao menos t chaves
+                if(i > 0 && raiz->filho[i - 1]->numero >= t)
+                {
+                    No* irmao = raiz->filho[i - 1];
+                    //Movemos chave do pai para o filho, e a chave do irmao para o pai
+                    for(int j = filho->numero; j > 0; j--) //desloca as chaves para direita, deixando [0] livre
+                    {
+                        filho->chave[j] = filho->chave[j - 1];
+                    }
+                    filho->chave[0] = raiz->chave[i - 1]; 
+                    raiz->chave[i - 1] = irmao->chave[irmao->numero - 1];
+                    filho->numero++;
+                    irmao->numero--;
+                }
+                //utilizamos i < raiz->numero para verificar se o irmao da direita existe
+                else if(i < raiz->numero && raiz->filho[i + 1]->numero >= t)
+                {
+                    No* irmao = raiz->filho[i + 1];
+                    //Movemos chave do pai para o filho, e a chave do irmao para o pai
+                    filho->chave[filho->numero] = raiz->chave[i]; 
+                    raiz->chave[i] = irmao->chave[0];
+                    for(int j = 0; j < irmao->numero; j++) //deslocando as chaves para esqyerda
+                    {
+                        irmao->chave[j] = irmao->chave[j + 1];
+                    }
+                    filho->numero++;
+                    irmao->numero--;
+                }
+                //Caso 3b: caso os irmaos tenham t - 1 chaves
+                else
+                {
+                    if(i < raiz->numero) //existe um irmao a direita
+                    {
+                        MergeChildren(raiz, i); //merge entre filho[i] e filho[i + 1]
+                    }
+                    else
+                    {
+                        MergeChildren(raiz, (i - 1));
+                    }
+                }
+            }
+
+            RemocaoCLRS(filho, chave);
+        }
     }
+}
+
+void MergeChildren(Arvore raiz, int index)
+{
+    No* esquerda = raiz->filho[index];
+    No* direita = raiz->filho[index + 1];
+
+    //Move a chave atual do no raiz para o ultima chave do filho da esquerda
+    esquerda->chave[t - 1] = raiz->chave[index];
+
+    //Copiando as chaves do no direita parta o no da esquerda
+    for(int i = 0; i < direita->numero; i++)
+    {
+        esquerda->chave[t + i] = direita->chave[i];
+        esquerda->numero++;
+    }
+
+    //Se esquerda for no interno, sera necessario ajustar os ponteiros
+    if(esquerda->folha == true)
+    {
+        //Copiando os ponteiros do no direita parta o no da esquerda
+        for(int i = 0; i <= direita->numero; i++)
+        {
+            esquerda->filho[t + i] = direita->filho[i];
+        }
+    }
+
+    //Remove a chave do No atual, deslocando das chaves
+    for(int i = index; i < raiz->numero - 1; i++)
+    {
+        raiz->chave[i] = raiz->chave[i + 1];
+    }
+    //Ajusta os ponteiros para os filhos, deslocando-os
+    for(int i = index + 1; i < raiz->numero; i++)
+    {
+        raiz->filho[i] = raiz->filho[i + 1];
+    }
+
+    //Ajusta o numero de chaves, ja que removemos uma delas
+    raiz->numero--;
+
+    //Librea o no da memoria
+    free(direita);
 
 }
