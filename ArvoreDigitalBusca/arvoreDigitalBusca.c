@@ -37,3 +37,35 @@ No* BuscaRecursiva(No* arvore, unsigned busca, int nivel)
         return BuscaRecursiva(arvore->esquerda, busca, nivel + 1);
     }
 }
+
+No* InserirRecursivo(No* arvore, unsigned chave, int nivel)
+{
+    No* novo;
+    if(arvore == NULL)
+    {
+        novo = malloc(sizeof(No));
+        novo->direita = NULL;
+        novo->esquerda = NULL;
+        novo->chave = chave;
+        return novo;
+    }
+    //Caso a chave ja esteja na arvore
+    if(arvore->chave == chave)
+    {
+        return arvore;
+    }
+    //Navegando pela arvore
+    if(bit(chave, nivel) == 1)
+    {
+        //se o bit for 1, seguiremos a arvore para a direita
+        arvore->direita = InserirRecursivo(arvore->direita, chave, nivel + 1);
+    }
+    else
+    {   
+        //se o bit for 0, seguiremos a arvore para a esquerda
+        arvore->esquerda = InserirRecursivo(arvore->esquerda, chave, nivel + 1);
+    }
+
+    //apos a insercao, retornamos a arvore
+    return arvore;
+}
