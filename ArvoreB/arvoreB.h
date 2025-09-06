@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 #define b 5
@@ -16,3 +17,10 @@ typedef struct No
 } No, *Arvore;
 
 No* BuscaRecursiva(No* raiz, int busca);
+No* CriarNo();
+void InsercaoCLRS(Arvore raiz, int chave);
+void InsercaoNaoCheio(Arvore raiz, int chave);
+void SplitChildren(Arvore raiz, int index);
+void RemocaoCLRS(Arvore raiz, int chave);
+void MergeChildren(Arvore raiz, int index);
+void ImprimirArvore(Arvore raiz, int nivel);
