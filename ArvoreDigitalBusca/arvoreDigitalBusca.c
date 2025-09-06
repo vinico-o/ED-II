@@ -5,7 +5,17 @@ unsigned int bit(unsigned numero, int k)
 {
     //Para deixar o kesimo bit como o menos significativo precisamos de
     //NBITS - k - 1 rotacoes para direita, o "1" indica o bit menos significativo
-    return (numero >> NBITS - k - 1) & 1;
+    return (numero >> (NBITS - k - 1)) & 1;
+}
+
+void ImprimirEmOrdem(No* arvore)
+{
+    if(arvore != NULL)
+    {
+        ImprimirEmOrdem(arvore->esquerda);
+        printf("%d ", arvore->chave);
+        ImprimirEmOrdem(arvore->direita);
+    }
 }
 
 No* Busca(No* arvore, unsigned busca)
@@ -28,7 +38,7 @@ No* BuscaRecursiva(No* arvore, unsigned busca, int nivel)
     //Se a chave nao for encontrada, verifica o caminho
     //bit 1 -> direita, bit 0 -> esquerda
     //O k-esimo bit eh o bit na posicao "nivel"
-    if(bit(arvore->chave, nivel) == 1)
+    if(bit(busca, nivel) == 1)
     {
         return BuscaRecursiva(arvore->direita, busca, nivel + 1);
     }
@@ -36,6 +46,11 @@ No* BuscaRecursiva(No* arvore, unsigned busca, int nivel)
     {
         return BuscaRecursiva(arvore->esquerda, busca, nivel + 1);
     }
+}
+
+No* Inserir(No* arvore, unsigned chave)
+{
+    return InserirRecursivo(arvore, chave, 0);
 }
 
 No* InserirRecursivo(No* arvore, unsigned chave, int nivel)
@@ -67,5 +82,75 @@ No* InserirRecursivo(No* arvore, unsigned chave, int nivel)
     }
 
     //apos a insercao, retornamos a arvore
+    return arvore;
+}
+
+No* PredecessorMaisADireita(No* arvore)
+{
+    arvore = arvore->esquerda; //caminhando para o esquerdo
+    while(arvore->direita != NULL)
+    {
+        arvore = arvore->direita;
+    }
+
+    return arvore;
+}
+
+No* Remover(No* arvore, unsigned chave)
+{
+    return RemoverRecursivo(arvore, chave, 0);
+}
+
+No* RemoverRecursivo(No* arvore, unsigned chave, int nivel)
+{
+    //elemento nao encontrado
+    if(arvore == NULL)
+    {
+        return arvore;
+    }
+    //Elemento encontrado para a remocao
+    if(arvore->chave == chave)
+    {
+        //No sem filhos (no folha)
+        if(arvore->direita == NULL && arvore->esquerda == NULL)
+        {
+            free(arvore);
+            return NULL;
+        }
+        else if(arvore->direita != NULL && arvore->esquerda == NULL) //Avore possui apenas um filho nao nulo(direita)
+        {
+            No* aux = arvore->direita;
+            free(arvore);
+            return aux;
+        }
+        else if(arvore->direita == NULL && arvore->esquerda != NULL) //Avore possui apenas um filho nao nulo(esquerda)
+        {
+            No* aux = arvore->esquerda;
+            free(arvore);
+            return aux;
+        }
+        else //O no possui dois filhos nao nulos
+        {
+            No*  aux = PredecessorMaisADireita(arvore);
+            arvore->chave = aux->chave;
+            arvore->esquerda = RemoverRecursivo(arvore->esquerda, aux->chave, nivel + 1);
+        }
+
+    }
+    else
+    {
+         //percorrendo a arvore
+        if(bit(chave, nivel) == 1)
+        {
+            //se o bit for 1, seguiremos a arvore para a direita
+            arvore->direita = RemoverRecursivo(arvore->direita, chave, nivel + 1);
+        }
+        else
+        {   
+            //se o bit for 0, seguiremos a arvore para a esquerda
+            arvore->esquerda = RemoverRecursivo(arvore->esquerda, chave, nivel + 1);
+        }
+    }
+
     return arvore;
 }
