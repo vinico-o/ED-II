@@ -49,3 +49,62 @@ No* BuscaRecursiva(No* arvore, unsigned chave, int bitAnt)
         return BuscaRecursiva(arvore->direita, chave, arvore->bit);
     }
 }
+
+void Inserir(No* arvore, unsigned chave)
+{
+    int i;
+    //Comecamos com arvore->esquerda pois "arvore eh o dummy"
+    No* busca = BuscaRecursiva(arvore->esquerda, chave, -1);
+
+    //Elemento ja presente na arvore, entao nao tem como inserir
+    if(busca->chave == chave)
+    {
+        return;
+    }
+
+    //Verificando onde as chaves se diferenciam
+    for(i = 0; getBit(busca->chave, i) == getBit(chave, i); i++);
+
+    arvore->esquerda = InserirRecursivo(arvore->esquerda, chave, i, arvore);
+}
+
+No* InserirRecursivo(No* arvore, unsigned chave, int bitDif, No* pai)
+{
+    No* novo;
+
+    //Encontra onde o no deve ser criado, pois ou subimos um nivel na arvore,
+    //ou o nivel de profundidade ja passou do necessario
+    if(arvore->bit >= bitDif || arvore->bit <= pai->bit)
+    {
+        No* novo = malloc(sizeof(No));
+        novo->chave = chave;
+        novo->bit = bitDif; //recebe o bit que diferencia do pai dele
+
+        //se o bit na posicao "bitDif" da chave for 1,
+        //o novo no aponta para a direita, pois indica ele mesmo
+        if(getBit(chave, novo->bit) == 1)
+        {
+            novo->direita = novo;
+            novo->esquerda = arvore;
+        }
+        else
+        {
+            novo->esquerda = novo;
+            novo->direita = arvore;
+        }
+
+        return novo;
+    }
+
+    //Caminhamos pela arvore, verificando o bit do no atual
+    if(getBit(chave,arvore->bit) == 0)
+    {
+        arvore->esquerda = InserirRecursivo(arvore->esquerda, chave, bitDif, arvore);
+    }
+    else
+    {
+        arvore->direita = InserirRecursivo(arvore->direita, chave, bitDif, arvore);
+    }
+
+    return arvore;
+}

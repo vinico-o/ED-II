@@ -18,6 +18,7 @@ typedef struct No
 unsigned int getBit(unsigned chave, int k);
 No* Busca(No* arvore, unsigned chave);
 No* BuscaRecursiva(No* arvore, unsigned chave, int bitAnt);
+void Inserir(No* arvore, unsigned chave);
 
 
 #endif // ARVORE_PATRICIA_H
