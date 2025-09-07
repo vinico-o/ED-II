@@ -15,4 +15,9 @@ typedef struct No
     struct No* direita;   //ponteiro para no da direita
 } No;
 
+unsigned int getBit(unsigned chave, int k);
+No* Busca(No* arvore, unsigned chave);
+No* BuscaRecursiva(No* arvore, unsigned chave, int bitAnt);
+
+
 #endif // ARVORE_PATRICIA_H
