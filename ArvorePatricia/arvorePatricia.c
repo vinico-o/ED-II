@@ -18,12 +18,20 @@ unsigned int getBit(unsigned chave, int k)
 
 No* Busca(No* arvore, unsigned chave)
 {
-    return BuscaRecursiva(arvore, chave, -1); //-1 eh o bit do no dummy
+    No* encontrado =  BuscaRecursiva(arvore, chave, -1); //-1 eh o bit do no dummy
+
+    if(encontrado->chave == chave)
+    {
+        return encontrado;
+    }
+
+    return NULL;
 }
 
 No* BuscaRecursiva(No* arvore, unsigned chave, int bitAnt)
 {
-    //Se, durante a busca, subimos um nivel da arvore, encontramos a chave
+    //Se, durante a busca, subimos um nivel da arvore, a busca termina
+    //mas nao necessariamente encontramos o no
     if(arvore->bit <= bitAnt)
     {
         return arvore;
