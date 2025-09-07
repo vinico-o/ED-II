@@ -6,7 +6,7 @@ void Inicializar(No** arvore)
     *arvore = malloc(sizeof(No));   
     (*arvore)->chave = UINT_MAX;     //Maior valor possivel para unsigned
     (*arvore)->esquerda = (*arvore); //aponta para o proprio dummy
-    (*arvore)->direita = NULL;       //aponta para o proprio dummy
+    (*arvore)->direita = (*arvore);       //aponta para o proprio dummy
     (*arvore)->bit = -1;             //bit de discriminacao do dummy
 
 }
@@ -76,7 +76,7 @@ No* InserirRecursivo(No* arvore, unsigned chave, int bitDif, No* pai)
     //ou o nivel de profundidade ja passou do necessario
     if(arvore->bit >= bitDif || arvore->bit <= pai->bit)
     {
-        No* novo = malloc(sizeof(No));
+        novo = malloc(sizeof(No));
         novo->chave = chave;
         novo->bit = bitDif; //recebe o bit que diferencia do pai dele
 
@@ -97,7 +97,7 @@ No* InserirRecursivo(No* arvore, unsigned chave, int bitDif, No* pai)
     }
 
     //Caminhamos pela arvore, verificando o bit do no atual
-    if(getBit(chave,arvore->bit) == 0)
+    if(getBit(chave, arvore->bit) == 0)
     {
         arvore->esquerda = InserirRecursivo(arvore->esquerda, chave, bitDif, arvore);
     }
@@ -107,4 +107,16 @@ No* InserirRecursivo(No* arvore, unsigned chave, int bitDif, No* pai)
     }
 
     return arvore;
+}
+
+void Imprimir(No* noAtual, No* noAnt)
+{
+    if (noAtual->bit > noAnt->bit)
+    {
+        printf ("%u ", noAtual->chave);
+
+        Imprimir(noAtual->esquerda, noAtual);
+        
+        Imprimir(noAtual->direita, noAtual);
+    }
 }
