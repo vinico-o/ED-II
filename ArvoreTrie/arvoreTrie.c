@@ -1,4 +1,4 @@
-#include <arvoreTrie.h>
+#include "arvoreTrie.h"
 
 //Funcao para retirnar o k-esimo bit
 unsigned int getBit(unsigned chave, int k)
@@ -13,6 +13,8 @@ No* CriarNo(unsigned chave)
     novo->esquerda = NULL;
     novo->direita = NULL;
     novo->chave = chave;
+
+    return novo;
 }
 
 //A busca eh proxima ao da ArvoreDigitaldeBusca, mas com uma verificacao se o no eh folha
@@ -41,11 +43,18 @@ No* BuscaRecursiva(No* arvore, unsigned chave, int nivel)
     }
 }
 
-No* Busca(No* arvore, unsigned chave)
+void Busca(No* arvore, unsigned chave)
 {
     //Se o elemento for encontrado, retorna o no em que esta, senao retorna NULL;
     No* resultado = BuscaRecursiva(arvore, chave, 0);
-    return resultado;
+    if(resultado == NULL)
+    {
+        printf("Elemento %u nao encontrado!\n", chave);
+    }
+    else
+    {
+        printf("Elemento %u encontrado!\n", chave);
+    }
 }
 
 No* InserirRecursivo(No* arvore, unsigned chave, int nivel)
@@ -54,15 +63,15 @@ No* InserirRecursivo(No* arvore, unsigned chave, int nivel)
     //Utilizamos UINT_MAX pois a informacao nao sera relevante
     if(arvore == NULL)
     {
-        No* novo = CriarNo(UINT_MAX);
+        arvore = CriarNo(UINT_MAX);
     }
 
     //se percorremos toda a arvore, criamos o no com informacao relevante
     if(nivel == NBITS)
     {
-        No* novo = CriarNo(chave);
-        novo->folha = true;
-        return novo;
+        arvore->folha = true;
+        arvore->chave = chave;
+        return arvore;
     }
 
     //caminhamos pela arvore, a partir da chave 0->esquerda, 1->direita
@@ -128,4 +137,27 @@ No* RemoverRecursivo(No* arvore, unsigned chave, int nivel)
 No* Remover(No* arvore, unsigned int chave)
 {
     return RemoverRecursivo(arvore, chave, 0);
+}
+
+void ImprimirRecursivo(No* arvore)
+{
+    if(arvore == NULL)
+    {
+        return;
+    }
+    
+    ImprimirRecursivo(arvore->esquerda);
+
+    if(arvore->folha == true)
+    {
+        printf("%u ", arvore->chave);
+    }
+
+    ImprimirRecursivo(arvore->direita);
+}
+
+void Imprimir(No* arvore)
+{
+    ImprimirRecursivo(arvore);
+    printf("\n");
 }
