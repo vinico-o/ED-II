@@ -14,3 +14,4 @@ typedef struct No
 
 unsigned int getBit(unsigned chave, int k);
 No* CriarNo(unsigned chave);
+No* BuscaRecursiva(No* arvore, unsigned chave, int nivel);
