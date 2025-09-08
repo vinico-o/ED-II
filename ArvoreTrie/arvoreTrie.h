@@ -16,3 +16,8 @@ typedef struct No
 unsigned int getBit(unsigned chave, int k);
 No* CriarNo(unsigned chave);
 No* BuscaRecursiva(No* arvore, unsigned chave, int nivel);
+No* Busca(No* arvore, unsigned chave);
+No* InserirRecursivo(No* arvore, unsigned chave, int nivel);
+No* Inserir(No* arvore, unsigned int chave);
+No* RemoverRecursivo(No* arvore, unsigned chave, int nivel);
+No* Remover(No* arvore, unsigned int chave);
