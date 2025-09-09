@@ -37,7 +37,7 @@ No* CriarNo()
     return novo;
 }
 
-void InsercaoCLRS(Arvore raiz, int chave)
+No* InsercaoCLRS(Arvore raiz, int chave)
 {
     //se o vetor estiver cheio (2t - 1)
     if(raiz->numero == MAX)
@@ -48,11 +48,13 @@ void InsercaoCLRS(Arvore raiz, int chave)
         
         SplitChildren(novo, 0);
         InsercaoNaoCheio(novo, chave);
-        raiz = novo;
+        
+        return novo;
     }
     else
     {
         InsercaoNaoCheio(raiz, chave);
+        return raiz;
     }
 }
 
@@ -63,14 +65,14 @@ void InsercaoNaoCheio(Arvore raiz, int chave)
     {
         //percorre o vetor ao contrario, passando as chaves uma posicao para frente
         //desse modo, quando for o local correto para inserir a chave, havera um espaco vazio
-        for(i = raiz->numero; i >= 0 && chave < raiz->chave[i]; i--)
+        for(i = raiz->numero - 1; i >= 0 && chave < raiz->chave[i]; i--)
         {
             raiz->chave[i + 1] = raiz->chave[i];
         }
 
         //inserimos a chave e atualizamos o valor de chaves atual
         raiz->chave[i + 1] = chave;
-        raiz->numero ++;
+        raiz->numero++;
     }
     else
     {
@@ -120,7 +122,7 @@ void SplitChildren(Arvore raiz, int index)
     filho->numero = MIN;
 
     //Ajusta os ponteiros da raiz para adicionar o novo no
-    for(int i = (raiz->numero + 1); i >= index + 1; i--)
+    for(int i = raiz->numero; i >= index + 1; i--)
     {
         raiz->filho[i + 1] = raiz->filho[i];
     }
@@ -129,15 +131,14 @@ void SplitChildren(Arvore raiz, int index)
     raiz->filho[index + 1] = novo;
 
     //Faz o deslocamento das chaves para incluir a mediana no no pai (raiz)
-    for(int i = raiz->numero; i >= index; i--)
+    for(int i = raiz->numero - 1; i >= index; i--)
     {
         raiz->chave[i + 1] = raiz->chave[i];
     }
 
     //passamos a mediana para o no pai e ajustamos seu numero de chaves
-    raiz->chave[index] = filho->chave[t]; //utilizamos t pois eh justamente a mediana
-    raiz->numero ++;
-
+    raiz->chave[index] = filho->chave[MIN]; //utilizamos t pois eh justamente a mediana
+    raiz->numero++;
 }
 
 void RemocaoCLRS(Arvore raiz, int chave)
@@ -252,7 +253,8 @@ void MergeChildren(Arvore raiz, int index)
     No* direita = raiz->filho[index + 1];
 
     //Move a chave atual do no raiz para o ultima chave do filho da esquerda
-    esquerda->chave[t - 1] = raiz->chave[index];
+    esquerda->chave[esquerda->numero] = raiz->chave[index];
+    esquerda->numero++;
 
     //Copiando as chaves do no direita parta o no da esquerda
     for(int i = 0; i < direita->numero; i++)
@@ -271,8 +273,11 @@ void MergeChildren(Arvore raiz, int index)
         }
     }
 
+    //Ajusta o numero de chaves, ja que removemos uma delas
+    raiz->numero--;
+
     //Remove a chave do No atual, deslocando das chaves
-    for(int i = index; i < raiz->numero - 1; i++)
+    for(int i = index; i < raiz->numero; i++)
     {
         raiz->chave[i] = raiz->chave[i + 1];
     }
@@ -281,9 +286,6 @@ void MergeChildren(Arvore raiz, int index)
     {
         raiz->filho[i] = raiz->filho[i + 1];
     }
-
-    //Ajusta o numero de chaves, ja que removemos uma delas
-    raiz->numero--;
 
     //Librea o no da memoria
     free(direita);
@@ -297,20 +299,16 @@ void ImprimirArvore(Arvore raiz, int nivel)
         return;
     }
 
-    for (int i = 0; i < nivel; i++)
-    {
-        printf("   ");
-    }
-    printf("[ ");
-    for (int i = 0; i < raiz->numero; i++)
+    printf("Nivel: %d [%d]\n", nivel, raiz->numero);
+    for(int i = 0; i < raiz->numero; i++)
     {
         printf("%d ", raiz->chave[i]);
     }
-    printf("]\n");
+    printf("\n");
 
     if(raiz->folha == false)
     {
-        for(int i = 0; i < raiz->numero + 1; i++)
+        for(int i = 0; i <= raiz->numero; i++)
         {
             ImprimirArvore(raiz->filho[i], nivel + 1);
         }

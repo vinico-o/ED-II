@@ -1,22 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "arvoreB.h"
+#include "arvoreB.c"
 
 int main() {
     
     Arvore raiz = CriarNo();
     raiz->folha = true;
 
-    
-    int valores[8] = {10, 20, 5, 6, 12, 30, 7, 17};
+    printf("\nInserindo 10...\n");
+    raiz = InsercaoCLRS(raiz, 10);
+    ImprimirArvore(raiz, 0);
 
-    printf("Inserindo valores:\n");
-    for (int i = 0; i < 8; i++) {
-        printf("Inserindo %d...\n", valores[i]);
-        InsercaoCLRS(raiz, valores[i]);
-        ImprimirArvore(raiz, 0);
-        printf("\n");
-    }
+    printf("\nInserindo 20...\n");
+    raiz = InsercaoCLRS(raiz, 20);
+    ImprimirArvore(raiz, 0);
+
+    printf("\nInserindo 5...\n");
+    raiz = InsercaoCLRS(raiz, 5);
+    ImprimirArvore(raiz, 0);
+
+    printf("\nInserindo 6...\n");
+    raiz = InsercaoCLRS(raiz, 6);
+    ImprimirArvore(raiz, 0);
+
+    printf("\nInserindo 12...\n");
+    raiz = InsercaoCLRS(raiz, 12);
+    ImprimirArvore(raiz, 0);
+
+    printf("\nInserindo 30...\n");
+    raiz = InsercaoCLRS(raiz, 30);
+    ImprimirArvore(raiz, 0);
+
+    printf("\nInserindo 7...\n");
+    raiz = InsercaoCLRS(raiz, 7);
+    ImprimirArvore(raiz, 0);
+
+    printf("\nInserindo 17...\n");
+    raiz = InsercaoCLRS(raiz, 17);
+    ImprimirArvore(raiz, 0);
 
     // Teste de busca
     int busca = 6;
